@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="en">
+
+    <link rel="stylesheet" type="text/css" href="tscheckbox/tscheckbox.css" media="screen">
+    <script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="tscheckbox/jquery.tscheckbox.js"></script>
+    <style type="text/css">
+        .tsCheckBox {
+            float: left;
+            max-width: 80%;
+            margin-right: 1%;
+        }
+    </style>
+</head>
+<body>
+    <container>
+        <form action="#" id="dateForm">
+            <div class="monthBlock">
+                <input type="checkbox" value="Jan">
+                <input type="checkbox" value="Feb">
+                <input type="checkbox" checked value="Mar">
+                <input type="checkbox" value="Apr">
+                <input type="checkbox" disabled value="May">
+                <input type="checkbox" value="June">
+                <input type="checkbox" value="July">
+                <input type="checkbox" value="Aug">
+                <input type="checkbox" value="Sept">
+                <input type="checkbox" value="Oct">
+                <input type="checkbox" value="Nov">
+                <input type="checkbox" value="Dec">
+            </div>
+
+            <div class="dayBlock">
+                <input type="checkbox" disabled checked data-value="01">
+                <input type="checkbox" data-value="02">
+                <input type="checkbox" data-value="03">
+                <input type="checkbox" data-value="04">
+                <input type="checkbox" data-value="05">
+                <input type="checkbox" data-value="06">
+                <input type="checkbox" data-value="07">
+                <input type="checkbox" data-value="08">
+                <input type="checkbox" data-value="09">
+                <input type="checkbox" data-value="10">
+                <input type="checkbox" data-value="11">
+                <input type="checkbox" data-value="12">
+                <input type="checkbox" data-value="13">
+                <input type="checkbox" data-value="14">
+                <input type="checkbox" data-value="15">
+                <input type="checkbox" data-value="16">
+                <input type="checkbox" data-value="17">
+                <input type="checkbox" data-value="18">
+                <input type="checkbox" data-value="19">
+                <input type="checkbox" data-value="21">
+                <input type="checkbox" data-value="22">
+                <input type="checkbox" data-value="23">
+                <input type="checkbox" data-value="24">
+                <input type="checkbox" data-value="25">
+                <input type="checkbox" data-value="26">
+                <input type="checkbox" data-value="27">
+                <input type="checkbox" data-value="28">
+                <input type="checkbox" data-value="29">
+                <input type="checkbox" data-value="30">
+                <input type="checkbox" data-value="31">
+            </div>
+        </form>
+    </container>
+    <script type="text/javascript">
+        function validateMonth($item, event, params) {
+            var shortMonths = ['Feb', 'Apr', 'June', 'Sept', 'Nov'];
+            var $dayBlock = $('#dateForm').find('.dayBlock');
+            var $monthBlock = $('#dateForm').find('.monthBlock');
+            var hideDay = false;
+            $monthBlock.find('input[type="checkbox"]').each(function(key, item) {
+                if (item.checked === true && shortMonths.indexOf(item.value) !== -1) {
+                    if (item.value === 'Feb') {
+                        hideDay = 3;
+                        return false;
+                    } else {
+                        hideDay = 1;
+                    }
+                }
+            });
+
+            if (hideDay) {
+                $dayBlock.find('input[type="checkbox"][data-value="31"]')[0].checked = false;
+                $dayBlock.find('input[type="checkbox"][data-value="31"]')[0].disabled = true;
+
+                if (hideDay === 3) {
+                    $dayBlock.find('input[type="checkbox"][data-value="30"]')[0].checked = false;
+                    $dayBlock.find('input[type="checkbox"][data-value="30"]')[0].disabled = true;
+                    $dayBlock.find('input[type="checkbox"][data-value="29"]')[0].checked = false;
+                    $dayBlock.find('input[type="checkbox"][data-value="29"]')[0].disabled = true;
+                } else {
+                    $dayBlock.find('input[type="checkbox"][data-value="30"]')[0].disabled = false;
+                    $dayBlock.find('input[type="checkbox"][data-value="29"]')[0].disabled = false;
+                }
+            } else {
+                $dayBlock.find('input[type="checkbox"][data-value="31"]')[0].disabled = false;
+                $dayBlock.find('input[type="checkbox"][data-value="30"]')[0].disabled = false;
+                $dayBlock.find('input[type="checkbox"][data-value="29"]')[0].disabled = false;
+            }
+            $dayBlock.find('input[type="checkbox"][data-value="31"]').trigger('change');
+            $dayBlock.find('input[type="checkbox"][data-value="30"]').trigger('change');
+            $dayBlock.find('input[type="checkbox"][data-value="29"]').trigger('change');
+        }
+        $(document).ready(function() {
+            $('#dateForm').find('.monthBlock input[type="checkbox"]').tsCheckbox({
+                itemContent: false,
+                //hideSource: false,
+                verticalClass: true,
+                boxPosition: {
+                    method: 'prependTo',
+                    selector: $('#dateForm')
+                },
+                eventCallbacks: {
+                    change: function($item, event, params) {
+                        validateMonth($item, event, params);
+                    },
+                    init: function($item, event, params) {
+                        validateMonth($item, event, params);
+                    },
+                }
+            });
+            $('#dateForm').find('.dayBlock input[type="checkbox"]').tsCheckbox({
+                itemContent: 'value',
+                //hideSource: false,
+                boxPosition: {
+                    method: 'insertBefore',
+                    selector: $('.monthBlock')
+                }
+            });
+        });
+    </script>
+</body>
+</html>
